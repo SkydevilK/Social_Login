@@ -2,7 +2,8 @@ import React, {
     Component
 } from 'react';
 import KakaoLogin from 'react-kakao-login';
-import styled from 'styled-components';
+import GoogleLogin from 'react-google-login';
+import NaverLogin from 'react-naver-login';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -11,6 +12,17 @@ class Login extends Component {
             provider: '',
         }
     }
+    // Google Login
+    responseGoogle = (res) =>
+    {
+        console.log(res);
+        console.log(res.googleId);
+        this.setState({
+            id: res.googleId,
+            provider: 'google'
+        })
+    }
+
     // Kakao Login
     responseKakao = (res) => {
         console.log(res.profile.id);
@@ -19,7 +31,7 @@ class Login extends Component {
             provider: 'kakao'
         })
     }
-
+    
     // Login Fail
     responseFail = (err) => {
         console.error(err);
@@ -27,35 +39,33 @@ class Login extends Component {
 
     render(){
         return(
-            <Container>
-                <KakaoButton
+            <div>                
+                <GoogleLogin
+                    clientId="605769507433-205lj47uj46v02ucrpvbgpck6n2mmed6.apps.googleusercontent.com"
+                    render={(props) => <div onClick={props.onClick}>Google Login</div>}
+                    buttonText="Google"
+                    onSuccess={this.responseGoogle}
+                    onFailure={this.responseFail}
+                />
+
+
+                <KakaoLogin
                     jsKey="d507ecdb10512afbd7bfbf2d5a9f788a"
-                    buttonText="Kakao"
+                    render={(props) => <div onClick={props.onClick}>Kakao Login</div>}
                     onSuccess={this.responseKakao}
                     onFailure={this.responseFail}
                     getProfile="true"
                 />
-            </Container>
+                
+                <NaverLogin 
+                    clientId="sRE5qhTibiGa_aKigxTN"
+                    callbackUrl="http://127.0.0.1:3000"
+                    render={(props) => <div onClick={props.onClick}>Naver Login</div>}
+                    onSuccess={(naverUser) => console.log(naverUser)}
+                    onFailure={this.responseFail}
+                />
+            </div>
         );
     }
 }
-const Container = styled.div`
-    dispaly: flex;
-    flex-flow: column wrap;
-`
-
-const KakaoButton = styled(KakaoLogin) `
-    padding: 0;
-    width: 190px;
-    height: 44px;
-    line-height: 44px;
-    color: #783c00;
-    background-color: #FFEB00;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-`
-
 export default Login;
